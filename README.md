@@ -1,0 +1,1 @@
+building a modern Data Warehouse (DWH) implementation using Medallion Architecture on MySQL. This project demonstrates end-to-end ETL pipelines, dimensional data modeling, data quality management, and analytics-ready datasets for business intelligence and reporting
