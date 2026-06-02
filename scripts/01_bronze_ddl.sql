@@ -4,8 +4,8 @@ dwh
   ├── silver
   ├── gold
   Workaround : create the datawarehouse but instead of schema's create tables to simulate the medallion architecture
-  
 */
+
 drop database if exists datawarehouse;
 create database datawarehouse;
 use datawarehouse;
@@ -16,7 +16,7 @@ use datawarehouse;
 
 drop table if exists bronze_crm_cust_info;
 create table bronze_crm_cust_info(
-	cst_id int primary key,
+	cst_id int,
     cst_key varchar(50),
     cst_firstname varchar(50),
     cst_lastname varchar(50),
@@ -26,7 +26,7 @@ create table bronze_crm_cust_info(
 );
 drop table if exists bronze_crm_prd_info;
 create table bronze_crm_prd_info(
-	prd_id int primary key,
+	prd_id int,
     prd_key varchar(50),
     prd_nm varchar(50),
     prd_cost int,
