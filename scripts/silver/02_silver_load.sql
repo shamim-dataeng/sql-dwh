@@ -60,3 +60,34 @@ select
 		else date_sub(LEAD(prd_start_dt) over(partition by prd_key order by prd_start_dt),interval 1 DAY)
     end as prd_end_dt
 from bronze_crm_prd_info;
+
+insert into silver_crm_sales_details(
+	sls_ord_num, 
+	sls_prd_key,  
+	sls_cust_id, 
+	sls_order_dt, 
+	sls_ship_dt, 
+	sls_due_dt, 
+	sls_sales,
+	sls_quantity, 
+	sls_price
+)
+select 
+	sls_ord_num,
+    sls_prd_key,
+    sls_cust_id,
+    cast(cast(sls_order_dt as char) as date) as sls_order_date,
+	cast(cast(sls_ship_dt as char) as date) as sls_ship_date,
+    cast(cast(sls_due_dt as char) as date) as sls_due_date,
+    case 
+		when sls_sales <= 0 or sls_sales!=sls_quantity*abs(sls_price)
+        then sls_quantity*abs(sls_price)
+        else sls_sales
+	end as sls_sales,
+    sls_quantity,
+    case
+		when sls_price <=0 then sls_sales/nullif(sls_quantity,0)
+		else sls_price
+	end as sls_price
+from bronze_crm_sales_details;
+
