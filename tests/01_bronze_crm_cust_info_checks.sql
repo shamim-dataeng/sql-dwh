@@ -95,7 +95,12 @@ WHERE cst_create_date > NOW();
 -- INFERENCE FROM ABOVE QUERY: date is sanitized 
 
 select distinct cst_gndr from bronze_crm_cust_info;
--- INFERENCE FROM ABOVE QUERY: gender column does not have any garbage value 
+-- INFERENCE FROM ABOVE QUERY: gender column does not have any garbage value
+
+SET sql_mode = '';
+SET SQL_SAFE_UPDATES =0;
+delete from bronze_crm_cust_info where cst_create_date='0000-00-00';
+select distinct cst_create_date from bronze_crm_cust_info;
 
 /* SUMMARY OF QUALITY CHECKS FOR bronze_crm_cust_info:
 
