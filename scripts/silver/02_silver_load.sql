@@ -1,4 +1,7 @@
 -- 1. Load data into silver_crm_cust_info table from transformed bronze_crm_cust_info table. Similar insert statements will be created for other 5 tables in silver layer.
+
+-- CRM tables loading
+
 insert into silver_crm_cust_info(
     cst_id,
     cst_key,
@@ -61,6 +64,8 @@ select
     end as prd_end_dt
 from bronze_crm_prd_info;
 
+-- ERP Tables loading 
+
 insert into silver_crm_sales_details(
 	sls_ord_num, 
 	sls_prd_key,  
@@ -91,3 +96,51 @@ select
 	end as sls_price
 from bronze_crm_sales_details;
 
+
+insert into silver_erp_cust_az12(
+	cid,
+    bdate,
+    gen
+)
+select
+	case 
+		when cid like 'NAS%' then substring(cid,4,length(cid))
+        else cid
+	end as cid,
+    case
+		when bdate>now() then null
+        else bdate
+	end as bdate,
+    case 
+		when upper(trim(gen))='M' then 'Male'
+        when upper(trim(gen))='F' then 'Female'
+        when trim(gen)='' or gen is null then 'Unknown'
+        else trim(gen)
+	end as gen
+from bronze_erp_cust_az12;
+
+insert into silver_erp_loc_a101(
+	cid,
+    cntry
+)
+select
+	replace(cid,'-','')as cid,
+    case 
+		when trim(cntry)='' then 'Unknown'
+		else trim(cntry)
+    end as cntry
+from
+bronze_erp_loc_a101;
+
+insert into silver_erp_px_cat_g1v2(
+	id,
+    cat,
+    subcat,
+    maintenance
+)
+SELECT 
+	id,
+    cat,
+    subcat,
+    maintenance
+FROM datawarehouse.bronze_erp_px_cat_g1v2;
